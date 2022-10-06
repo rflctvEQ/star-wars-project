@@ -74,12 +74,15 @@ app.get("/largest-planet", function (req, res) { return __awaiter(void 0, void 0
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 planets_1 = [];
+                // make all 6 calls to the SWAPI server at once
                 return [4 /*yield*/, Promise.all(promises)
                         .then(function (results) {
+                        // concat each array of planets from response with locally owned array of planets
                         results.forEach(function (page) { return (planets_1 = planets_1.concat(page.results)); });
                     })
                         .then(function () { return (largestPlanet_1 = (0, services_1.getLargestPlanet)(planets_1)); })["catch"](function (err) { return console.error(err); })];
             case 1:
+                // make all 6 calls to the SWAPI server at once
                 _a.sent();
                 res.status(200).json({ largestPlanet: largestPlanet_1 });
                 return [3 /*break*/, 3];
@@ -104,12 +107,15 @@ app.get("/most-populated", function (req, res) { return __awaiter(void 0, void 0
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 planets_2 = [];
+                // make all 6 calls to the SWAPI server at once
                 return [4 /*yield*/, Promise.all(promises)
                         .then(function (results) {
+                        // concat each array of planets from response with locally owned array of planets
                         results.forEach(function (page) { return (planets_2 = planets_2.concat(page.results)); });
                     })
                         .then(function () { return (mostPopulatedPlanet_1 = (0, services_1.getMostPopulatedPlanet)(planets_2)); })["catch"](function (err) { return console.error(err); })];
             case 1:
+                // make all 6 calls to the SWAPI server at once
                 _a.sent();
                 res.status(200).json({ mostPopulatedPlanet: mostPopulatedPlanet_1 });
                 return [3 /*break*/, 3];
