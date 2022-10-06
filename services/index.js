@@ -11,7 +11,11 @@ function getLargestPlanet(planets) {
     var planetsWithDiameter = planets.filter(function (planet) { return planet.diameter !== "unknown"; });
     // filter out planet(s) with largest diameter
     return planetsWithDiameter.filter(function (planet) {
-        return planet.diameter == Math.max.apply(Math, planetsWithDiameter.map(function (planet) { return parseInt(planet.diameter); }) // ensure diameter is a number and not a string
+        return planet.diameter == 
+        // finds the largest diameter from a list of all diameter values
+        Math.max.apply(
+        // finds the largest diameter from a list of all diameter values
+        Math, planetsWithDiameter.map(function (planet) { return parseInt(planet.diameter); }) // ensure diameter is a number and not a string
         );
     });
 }
@@ -25,7 +29,11 @@ function getMostPopulatedPlanet(planets) {
     var populatedPlanets = planets.filter(function (planet) { return planet.population !== "unknown"; });
     // filter out planet(s) with largest known population
     return populatedPlanets.filter(function (planet) {
-        return planet.population == Math.max.apply(Math, populatedPlanets.map(function (planet) { return parseInt(planet.population); }) // ensure population is a number and not a string
+        return planet.population == 
+        // finds the largest population from a list of all population values
+        Math.max.apply(
+        // finds the largest population from a list of all population values
+        Math, populatedPlanets.map(function (planet) { return parseInt(planet.population); }) // ensure population is a number and not a string
         );
     });
 }

@@ -95,7 +95,6 @@ app.get("/largest-planet", function (req, res) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, getAllPlanets()];
             case 1:
                 _a.sent();
-                console.log("responding!");
                 res.status(200).json({ largestPlanet: largestPlanet_1 });
                 return [3 /*break*/, 3];
             case 2:
