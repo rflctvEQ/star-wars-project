@@ -51,48 +51,34 @@ app.get("/", function (req, res) {
             throw err;
     });
 });
+// urls required to get list of all planets from SWAPI
+var urls = [
+    "https://swapi.dev/api/planets/?page=1",
+    "https://swapi.dev/api/planets/?page=2",
+    "https://swapi.dev/api/planets/?page=3",
+    "https://swapi.dev/api/planets/?page=4",
+    "https://swapi.dev/api/planets/?page=5",
+    "https://swapi.dev/api/planets/?page=6",
+];
+// collects all fetches to server required to get list of all planets
+var promises = urls.map(function (url) { return (0, cross_fetch_1["default"])(url).then(function (res) { return res.json(); }); });
 /**
  * Retrieves a list of total planets available from the Star Wars API
  * https://swapi.dev/documentation
  * From that list, find the largest diameter and filter planet(s) with that diameter from the list
  */
 app.get("/largest-planet", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var planets_1, largestPlanet_1, getAllPlanets, err_1;
+    var planets_1, largestPlanet_1, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 planets_1 = [];
-                getAllPlanets = function () { return __awaiter(void 0, void 0, void 0, function () {
-                    var i;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                i = 1;
-                                _a.label = 1;
-                            case 1:
-                                if (!(i < 7)) return [3 /*break*/, 4];
-                                // get each page of planets and concat with planets array
-                                return [4 /*yield*/, (0, cross_fetch_1["default"])("https://swapi.dev/api/planets/?page=" + i)
-                                        .then(function (res) { return res.json(); })
-                                        .then(function (response) {
-                                        planets_1 = planets_1.concat(response.results);
-                                    })];
-                            case 2:
-                                // get each page of planets and concat with planets array
-                                _a.sent();
-                                _a.label = 3;
-                            case 3:
-                                i++;
-                                return [3 /*break*/, 1];
-                            case 4:
-                                // method from services returns largest planet from list of planets
-                                largestPlanet_1 = (0, services_1.getLargestPlanet)(planets_1);
-                                return [2 /*return*/];
-                        }
-                    });
-                }); };
-                return [4 /*yield*/, getAllPlanets()];
+                return [4 /*yield*/, Promise.all(promises)
+                        .then(function (results) {
+                        results.forEach(function (page) { return (planets_1 = planets_1.concat(page.results)); });
+                    })
+                        .then(function () { return (largestPlanet_1 = (0, services_1.getLargestPlanet)(planets_1)); })["catch"](function (err) { return console.error(err); })];
             case 1:
                 _a.sent();
                 res.status(200).json({ largestPlanet: largestPlanet_1 });
@@ -112,42 +98,17 @@ app.get("/largest-planet", function (req, res) { return __awaiter(void 0, void 0
  * Find largest population among those planets and return planet(s) with that population
  */
 app.get("/most-populated", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var planets_2, mostPopulatedPlanet_1, getAllPlanets, err_2;
+    var planets_2, mostPopulatedPlanet_1, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 planets_2 = [];
-                getAllPlanets = function () { return __awaiter(void 0, void 0, void 0, function () {
-                    var i;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                i = 1;
-                                _a.label = 1;
-                            case 1:
-                                if (!(i < 7)) return [3 /*break*/, 4];
-                                // get each page of planets and concat with planets array
-                                return [4 /*yield*/, (0, cross_fetch_1["default"])("https://swapi.dev/api/planets/?page=" + i)
-                                        .then(function (res) { return res.json(); })
-                                        .then(function (response) {
-                                        planets_2 = planets_2.concat(response.results);
-                                    })];
-                            case 2:
-                                // get each page of planets and concat with planets array
-                                _a.sent();
-                                _a.label = 3;
-                            case 3:
-                                i++;
-                                return [3 /*break*/, 1];
-                            case 4:
-                                // method from services returns highest populated planet from list of planets
-                                mostPopulatedPlanet_1 = (0, services_1.getMostPopulatedPlanet)(planets_2);
-                                return [2 /*return*/];
-                        }
-                    });
-                }); };
-                return [4 /*yield*/, getAllPlanets()];
+                return [4 /*yield*/, Promise.all(promises)
+                        .then(function (results) {
+                        results.forEach(function (page) { return (planets_2 = planets_2.concat(page.results)); });
+                    })
+                        .then(function () { return (mostPopulatedPlanet_1 = (0, services_1.getMostPopulatedPlanet)(planets_2)); })["catch"](function (err) { return console.error(err); })];
             case 1:
                 _a.sent();
                 res.status(200).json({ mostPopulatedPlanet: mostPopulatedPlanet_1 });

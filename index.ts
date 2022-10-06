@@ -17,6 +17,19 @@ app.get("/", (req, res) => {
   });
 });
 
+// urls required to get list of all planets from SWAPI
+const urls = [
+  "https://swapi.dev/api/planets/?page=1",
+  "https://swapi.dev/api/planets/?page=2",
+  "https://swapi.dev/api/planets/?page=3",
+  "https://swapi.dev/api/planets/?page=4",
+  "https://swapi.dev/api/planets/?page=5",
+  "https://swapi.dev/api/planets/?page=6",
+];
+
+// collects all fetches to server required to get list of all planets
+const promises = urls.map((url) => fetch(url).then((res) => res.json()));
+
 /**
  * Retrieves a list of total planets available from the Star Wars API
  * https://swapi.dev/documentation
@@ -30,22 +43,14 @@ app.get("/largest-planet", async (req, res) => {
     // variable that will eventually be sent in response to client
     let largestPlanet: Planet;
 
-    const getAllPlanets = async () => {
-      // TODO: make this modular instead of hardcoding the API calls
-      for (let i = 1; i < 7; i++) {
-        // get each page of planets and concat with planets array
-        await fetch(`https://swapi.dev/api/planets/?page=${i}`)
-          .then((res) => res.json())
-          .then((response) => {
-            planets = planets.concat(response.results);
-          });
-      }
-
-      // method from services returns largest planet from list of planets
-      largestPlanet = getLargestPlanet(planets);
-    };
-
-    await getAllPlanets();
+    // make all 6 calls to the SWAPI server at once
+    await Promise.all(promises)
+      .then((results) => {
+        // concat each array of planets from response with locally owned array of planets
+        results.forEach((page) => (planets = planets.concat(page.results)));
+      })
+      .then(() => (largestPlanet = getLargestPlanet(planets)))
+      .catch((err) => console.error(err));
 
     res.status(200).json({ largestPlanet });
   } catch (err) {
@@ -67,22 +72,14 @@ app.get("/most-populated", async (req, res) => {
     // variable that will eventually be sent in response to client
     let mostPopulatedPlanet: Planet;
 
-    const getAllPlanets = async () => {
-      // TODO: make this modular instead of harding the API calls
-      for (let i = 1; i < 7; i++) {
-        // get each page of planets and concat with planets array
-        await fetch(`https://swapi.dev/api/planets/?page=${i}`)
-          .then((res) => res.json())
-          .then((response) => {
-            planets = planets.concat(response.results);
-          });
-      }
-
-      // method from services returns highest populated planet from list of planets
-      mostPopulatedPlanet = getMostPopulatedPlanet(planets);
-    };
-
-    await getAllPlanets();
+    // make all 6 calls to the SWAPI server at once
+    await Promise.all(promises)
+      .then((results) => {
+        // concat each array of planets from response with locally owned array of planets
+        results.forEach((page) => (planets = planets.concat(page.results)));
+      })
+      .then(() => (mostPopulatedPlanet = getMostPopulatedPlanet(planets)))
+      .catch((err) => console.error(err));
 
     res.status(200).json({ mostPopulatedPlanet });
   } catch (err) {
