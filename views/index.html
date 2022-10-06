@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biggest Planet</title>
+  </head>
+  <body>
+    <h1>Biggest Planet</h1>
+
+    <div class="buttons-container">
+      <button id="largest-planet">Find Largest Planet</button>
+      <button id="most-populated">Find Most Populated Planet</button>
+    </div>
+
+    <script>
+      // variable declaration for HTML elements
+      const buttonContainer =
+        document.getElementsByClassName("buttons-container")[0];
+      const largestPlanetBtn = document.getElementById("largest-planet");
+      const mostPopulatedBtn = document.getElementById("most-populated");
+
+      /**
+       * template for largest planet and most populated planet info
+       * @param planet - contains all the planet info
+       * @param type - largestPlanet or mostPopulated
+       */
+      const planetInfoTemplate = (planet, type) => `
+        <div>
+          <h2>${
+            type === "largestPlanet"
+              ? "Largest Planet"
+              : "Most Populated Planet"
+          }</h2>
+
+          <h3>${planet.name}</h3>
+          <p>${
+            type === "largestPlanet"
+              ? "Diameter: " + planet.diameter + " km"
+              : "Population: " + planet.population + " sentient beings"
+          }</p>
+          <br>
+          <h4>More Info</h4>
+          <p>${
+            type === "largestPlanet"
+              ? "Population: " + planet.population + " sentient beings"
+              : "Diameter: " + planet.diameter + " km"
+          }</p>
+          <p>Climate: ${planet.climate}</p>
+          <p>Terain: ${planet.terrain}</p>
+        </div>
+      `;
+
+      const getLargestPlanet = async () => {
+        // construct loading message element
+        const loadingElement = document.createElement("p");
+        const loadingMessage = document.createTextNode("Loading...");
+        loadingElement.appendChild(loadingMessage);
+
+        // replace button with loading message
+        largestPlanetBtn.replaceWith(loadingMessage);
+
+        await fetch("/largest-planet")
+          .then((res) => res.json())
+          .then((planet) =>
+            // add planetInfoTemplate to DOM
+            buttonContainer.insertAdjacentHTML(
+              "afterend",
+              planetInfoTemplate(planet.largestPlanet[0], "largestPlanet")
+            )
+          )
+          .catch((err) => console.error(err));
+
+        // remove loading message from DOM
+        loadingElement.remove();
+        loadingMessage.remove();
+      };
+
+      const getMostPopulatedPlanet = async () => {
+        // construct loading message element
+        const loadingElement = document.createElement("p");
+        const loadingMessage = document.createTextNode("Loading...");
+        loadingElement.appendChild(loadingMessage);
+
+        // replace button with loading message
+        mostPopulatedBtn.replaceWith(loadingMessage);
+
+        await fetch("/most-populated")
+          .then((res) => res.json())
+          .then((planet) =>
+            // add planetInfoTemplate to DOM
+            buttonContainer.insertAdjacentHTML(
+              "afterend",
+              planetInfoTemplate(
+                planet.mostPopulatedPlanet[0],
+                "mostPopulatedPlanet"
+              )
+            )
+          )
+          .catch((err) => console.error(err));
+
+        // remove loading message from DOM
+        loadingElement.remove();
+        loadingMessage.remove();
+      };
+
+      largestPlanetBtn.addEventListener("click", getLargestPlanet);
+      mostPopulatedBtn.addEventListener("click", getMostPopulatedPlanet);
+    </script>
+  </body>
+</html>
